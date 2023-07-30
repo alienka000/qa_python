@@ -80,8 +80,7 @@ class TestBooksCollector:
 
     def test_add_book_in_favorites_book_not_in_list_negative(self, books):
         book = 'Золотой теленок'
-        books.add_book_in_favorites(book)
-        assert book not in books.favorites
+        assert book not in books.add_book_in_favorites(book)
 
 
     def test_delete_book_from_favorites_positive(self, books):
@@ -93,7 +92,7 @@ class TestBooksCollector:
 
     def test_get_list_of_favorites_books_positive(self, books):
         books.add_book_in_favorites('Песнь льда и пламени')
-        assert books.favorites == books.get_list_of_favorites_books()
+        assert 'Песнь льда и пламени' in books.get_list_of_favorites_books()
 
 
 
