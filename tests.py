@@ -25,12 +25,11 @@ class TestBooksCollector:
     # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
 
 
-    # Проверка добавления жанра книги - положительный тест
     @pytest.mark.parametrize('book_name, genre',
         [
             ['Песнь льда и пламени', 'Фантастика'],
             ['Десять негритят', 'Детективы'],
-            ['Двенадцать стульев', 'Комедии']
+            ['Элла в первом классе', 'Комедии']
         ]
     )
     def test_set_book_genre_three_books_positive(self, book_name, genre):
@@ -40,12 +39,11 @@ class TestBooksCollector:
         assert collector.books_genre[book_name] == genre
 
 
-    # Проверка добавления жанра книги - 3 книги с неверным жанром
     @pytest.mark.parametrize('book_name, genre',
                              [
                                  ['Песнь льда и пламени', 'Фантастик'],
                                  ['Десять негритят', 'Детектив'],
-                                 ['Двенадцать стульев', 'Комедия']
+                                 ['Элла в первом классе', 'Комедия']
                              ]
                              )
     def test_set_book_genre_three_books_with_wrong_genre(self, book_name, genre):
@@ -55,61 +53,46 @@ class TestBooksCollector:
         assert collector.books_genre[book_name] != genre
 
 
-    # Проверка получения жанра книги по ее имени
     def test_get_book_genre_get_fantasy(self, books):
         bookname = 'Песнь льда и пламени'
         assert books.get_book_genre(bookname) == books.books_genre[bookname]
 
 
-    # Проверка получения списка книг с определенным жанром
     def test_get_books_with_specific_genre_only_fantasy(self,books):
         genre = 'Фантастика'
-        book_list = []
-        for book_name in books.books_genre.keys():
-            if books.books_genre[book_name] == genre:
-                book_list.append(book_name)
-        assert book_list == books.get_books_with_specific_genre(genre)
+        assert 'Песнь льда и пламени' in books.get_books_with_specific_genre(genre)
 
 
-    # Проверка получения словаря books_genre
     def test_get_books_genre_dictionaries_equals(self, books):
         assert books.get_books_genre() == books.books_genre
 
 
-    # Проверка получения подходящих книг для детей
     def test_get_books_for_children_positive(self, books):
-        for book_name in books.get_books_for_children():
-            if books.books_genre[book_name] == 'Ужасы' or books.books_genre[book_name] == 'Детективы':
-                assert False
-                break
-            assert True
+        assert 'Элла в первом классе' in books.get_books_for_children() and 'Десять негритят' not in books.get_books_for_children()
 
-
-    # Проверка успешного добавления двух книг в Избранное
     def test_add_book_in_favorites_two_books_positive(self, books):
         book1 = 'Песнь льда и пламени'
-        book2 = 'Двенадцать стульев'
+        book2 = 'Элла в первом классе'
         books.add_book_in_favorites(book1)
         books.add_book_in_favorites(book2)
         assert book1 in books.favorites and book2 in books.favorites
 
 
-    # Проверка добавления в Избранное книги, которой нет в списке
     def test_add_book_in_favorites_book_not_in_list_negative(self, books):
         book = 'Золотой теленок'
         books.add_book_in_favorites(book)
         assert book not in books.favorites
 
 
-    # Проверка успешного удаления книги из Избранного
-    def test_delete_book_from_favorites_positive(self, books, books_in_favorites):
-        deleted_book='Элла в первом классе'
+    def test_delete_book_from_favorites_positive(self, books):
+        deleted_book = 'Элла в первом классе'
+        books.add_book_in_favorites(deleted_book)
         books.delete_book_from_favorites(deleted_book)
-        assert deleted_book not in books_in_favorites
+        assert deleted_book not in books.favorites
 
 
-    # Проверка получения списка Избранных книг
-    def test_get_list_of_favorites_books_positive(self, books, books_in_favorites):
+    def test_get_list_of_favorites_books_positive(self, books):
+        books.add_book_in_favorites('Песнь льда и пламени')
         assert books.favorites == books.get_list_of_favorites_books()
 
 
